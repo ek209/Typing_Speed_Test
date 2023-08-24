@@ -15,8 +15,8 @@ class Speed_Test():
     
     #scores wpm
     def words_per_minute(self, minutes):
-        wpm = round(self.random_word_count / minutes, 2)
-        cpm = round( self.longer_string / minutes, 2)
+        wpm = round( self.short_list / minutes)
+        cpm = round( self.shorter_string / minutes, 2)
         adjusted_wpm = round(cpm / 5, 2)
         print(f'Congrats! You typed {adjusted_wpm} words per minute with {self.word_accuracy}% accuracy, {self.char_accuracy}% character accuracy  ({cpm} characters, {wpm} actual words)')
     
@@ -29,6 +29,7 @@ class Speed_Test():
     def word_accuracy(self, typed_string):
         typed_list = typed_string.split()
         sentence_list = self.sentence.split()
+        self.short_list = min(len(typed_list), len(sentence_list))
         correct = 0
         for word in typed_list:
             if word in sentence_list:
@@ -40,8 +41,8 @@ class Speed_Test():
         for sentence_char, typed_char in zip(self.sentence, typed_string):
             if sentence_char == typed_char:
                 correct += 1
-        self.longer_string = max(len(typed_string), len(self.sentence))
-        self.char_accuracy = round((correct/ self.longer_string) * 100, 2)
+        self.shorter_string = min(len(typed_string), len(self.sentence))
+        self.char_accuracy = round((correct/ self.shorter_string) * 100, 2)
         
 
     def accuracy_scores(self, typed_string):
