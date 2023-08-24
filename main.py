@@ -2,7 +2,7 @@ import requests
 from random import randint, choice
 import time
 
-random_word_count =  10 #randint(40,60)
+random_word_count = randint(40,60)
 random_word_api = f'https://random-word-api.herokuapp.com/word?number={random_word_count}'
 random_sentence_response = requests.get(random_word_api)
 random_sentence_response.raise_for_status()
@@ -22,8 +22,9 @@ for sentence_char, typed_char in zip(sentence, typed):
     if sentence_char == typed_char:
         correct += 1
 longer_list = max(len(typed), len(sentence))
-accuracy = (correct/longer_list) * 100
+accuracy = round((correct/longer_list) * 100, 2)
 minutes = elapsed_time / 60
-wpm = random_word_count / minutes
-cpm = longer_list / minutes
-print(f'Congrats! You typed {wpm} words per minute ({cpm} characters per minute) with {accuracy}% accuracy')
+wpm = round(random_word_count / minutes, 2)
+cpm = round(longer_list / minutes, 2)
+adjusted_wpm = round(cpm / 5, 2)
+print(f'Congrats! You typed {adjusted_wpm} words per minute with {accuracy}% accuracy ({cpm} characters, {wpm} actual words)')
