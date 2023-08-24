@@ -12,6 +12,50 @@ class Speed_Test():
         random_sentence_response = requests.get(random_word_api)
         random_sentence_response.raise_for_status()
         return random_sentence_response.json()
+    
+    #scores wpm
+    def words_per_minute(self, minutes):
+        wpm = round(self.random_word_count / minutes, 2)
+        cpm = round( self.longer_string / minutes, 2)
+        adjusted_wpm = round(cpm / 5, 2)
+        print(f'Congrats! You typed {adjusted_wpm} words per minute with {self.word_accuracy}% accuracy, {self.char_accuracy}% character accuracy  ({cpm} characters, {wpm} actual words)')
+    
+    #scores the test
+    def score_test(self, typed_string, elapsed_time):
+        self.accuracy_scores(typed_string)
+        minutes = elapsed_time / 60
+        self.words_per_minute(minutes)
+
+    def word_accuracy(self, typed_string):
+        typed_list = typed_string.split()
+        sentence_list = self.sentence.split()
+        correct = 0
+        for word in typed_list:
+            if word in sentence_list:
+                correct += 1
+        self.word_accuracy = round(correct / len(sentence_list) * 100, 2)
+
+    def character_accuracy(self, typed_string):
+        correct = 0
+        for sentence_char, typed_char in zip(self.sentence, typed_string):
+            if sentence_char == typed_char:
+                correct += 1
+        self.longer_string = max(len(typed_string), len(self.sentence))
+        self.char_accuracy = round((correct/ self.longer_string) * 100, 2)
+        
+
+    def accuracy_scores(self, typed_string):
+        self.character_accuracy(typed_string)
+        self.word_accuracy(typed_string)
+
+    #starts the timers and test
+    def start_test(self):
+        start = time.time()
+        self.print_sentence()
+        typed = input('Retype sentence: ')
+        stop = time.time()
+        elapsed_time = stop - start
+        self.score_test(typed, elapsed_time)
 
     #adds words from json into a string
     def json_to_string(self, json):
